@@ -29,5 +29,5 @@ public:
 	unsigned int VAO;
 
 	Mesh(std::vector<Vertex> v, std::vector<Texture> t, std::vector<unsigned int> i);
-	void Draw(Shader shader);
+	void Draw(Shader& shader);
 };

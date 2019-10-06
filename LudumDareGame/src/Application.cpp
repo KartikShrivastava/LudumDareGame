@@ -15,6 +15,7 @@
 #include "Shader.h"
 #include "TextureStbImage.h"
 #include "Model.h"
+#include "Text.h"
 
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
 void ProcessInput(GLFWwindow* window);
@@ -136,6 +137,7 @@ int main() {
 	Shader pointLightShader("src/shaders/1_VertexShader.glsl", "src/shaders/6_PointLightFS.glsl");
 	Shader spotLightShader("src/shaders/1_VertexShader.glsl", "src/shaders/7_SpotLightSmoothFS.glsl");
 	Shader mixedLightShader("src/shaders/1_VertexShader.glsl", "src/shaders/8_MixedLightFS.glsl");
+	Shader textShader("src/shaders/textVS.glsl", "src/shaders/textFS.glsl");
 
 	TextureStbImage tex1("res/textures/wood.jpg", false, 0);
 	TextureStbImage tex2("res/textures/yayi.png", true, 1);
@@ -232,7 +234,6 @@ int main() {
 		glm::vec3(4.2f,  1.0f,  -2.0f),
 		glm::vec3(3.1f,  2.5f,  1.2f)
 	};
-
 	glm::vec3 pointLightColors[] = {
 		glm::vec3(1.0f, 0.5f, 0.2f),
 		glm::vec3(0.2f, 1.0f, 1.0f),
@@ -310,6 +311,16 @@ int main() {
 	};
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glm::mat4 projectionText = glm::ortho(0.0f, 1.0f * renderer.width, 0.0f, 1.0f * renderer.height);
+	
+	Text textRenderer("res/fonts/arial.ttf", 48);
+	textShader.Bind();
+	textShader.SetUniformMat4fv("u_projection", glm::value_ptr(projectionText));
+	//textShader.SetUniform1i("u_text", 0);
+	textShader.UnBind();
 	 
 	while (!glfwWindowShouldClose(window)) {
 		float currFrame = (float)glfwGetTime();
@@ -381,6 +392,7 @@ int main() {
 			lampShader.SetUniformMat4fv("u_mvp", glm::value_ptr(mvp));
 			GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
 		}
+		lampShader.UnBind();
 
 		mixedLightShader.Bind();
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(4.0f, -2.0f, 0.0f));
@@ -391,8 +403,12 @@ int main() {
 		mixedLightShader.SetUniform3fv("u_sLight.direction", glm::value_ptr(camera.front));
 		mixedLightShader.SetUniform3fv("u_camPos", glm::value_ptr(camera.position));
 		crytek.Draw(mixedLightShader);
+		mixedLightShader.UnBind();
 
- 
+
+		textRenderer.Draw(textShader, "This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
+
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

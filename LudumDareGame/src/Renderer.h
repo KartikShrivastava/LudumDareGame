@@ -4,8 +4,8 @@ class Renderer {
 private:
 
 public:
-	int width = 1080;
-	int height = 700;
+	int width = 720;
+	int height = 460;
 	float mix = 0.2f;
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
