@@ -31,7 +31,7 @@ int main() {
 	if(!glfwInit())
 		return -1;
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -390,7 +390,7 @@ int main() {
 			glm::mat4 mvp = projection * view * model;
 			lampShader.SetUniform3fv("u_lightColor", glm::value_ptr(pointLightColors[i]));
 			lampShader.SetUniformMat4fv("u_mvp", glm::value_ptr(mvp));
-			GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
+			//GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
 		}
 		lampShader.UnBind();
 
